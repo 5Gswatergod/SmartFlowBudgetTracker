@@ -2,7 +2,7 @@ import Foundation
 import CoreData
 
 @MainActor
-final class InputService: ObservableObject {
+final class InputService {
     private let coreDataStack: CoreDataStack
     private let ledgerService: LedgerService
 
