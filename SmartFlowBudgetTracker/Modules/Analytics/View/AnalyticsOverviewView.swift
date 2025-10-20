@@ -3,7 +3,6 @@ import SwiftUI
 struct AnalyticsOverviewView: View {
     @EnvironmentObject private var analyticsViewModel: AnalyticsViewModel
     @Environment(\.appTheme) private var theme
-    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(spacing: theme.layoutSpacingMedium) {
@@ -20,51 +19,46 @@ struct AnalyticsOverviewView: View {
                 VStack(alignment: .leading, spacing: theme.layoutSpacingXSmall) {
                     Text("Net cash flow")
                         .font(.caption)
-                        .foregroundStyle(palette.subheadline)
+                        .foregroundStyle(theme.palette.subheadline)
                     Text(analyticsViewModel.summary.netCashFlow, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                         .font(.title2.weight(.bold))
-                        .foregroundStyle(analyticsViewModel.summary.netCashFlow >= 0 ? palette.positive : palette.negative)
+                        .foregroundStyle(analyticsViewModel.summary.netCashFlow >= 0 ? theme.palette.positive : theme.palette.negative)
                 }
                 Spacer()
                 VStack(alignment: .leading, spacing: theme.layoutSpacingXSmall) {
                     Text("Run rate (30d)")
                         .font(.caption)
-                        .foregroundStyle(palette.subheadline)
+                        .foregroundStyle(theme.palette.subheadline)
                     Text(analyticsViewModel.summary.runRate, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                         .font(.headline)
-                        .foregroundStyle(palette.accent)
+                        .foregroundStyle(theme.palette.accent)
                 }
             }
 
             VStack(alignment: .leading, spacing: theme.layoutSpacingXSmall) {
                 Text("Top categories")
                     .font(.caption)
-                    .foregroundStyle(palette.subheadline)
+                    .foregroundStyle(theme.palette.subheadline)
                 ForEach(analyticsViewModel.summary.categoryBreakdown.prefix(3), id: \.category) { breakdown in
                     CategoryBarView(breakdown: breakdown)
                 }
                 if !analyticsViewModel.summary.topInsight.isEmpty {
                     Text("Focus area: \(analyticsViewModel.summary.topInsight)")
                         .font(.caption)
-                        .foregroundStyle(palette.subheadline)
+                        .foregroundStyle(theme.palette.subheadline)
                         .padding(.top, theme.layoutSpacingXSmall)
                 }
             }
         }
         .padding(theme.layoutPadding)
-        .background(palette.panelBackground)
+        .background(theme.palette.panelBackground)
         .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadius, style: .continuous))
-    }
-
-    private var palette: AppTheme.Palette {
-        theme.palette(for: colorScheme)
     }
 }
 
 private struct CategoryBarView: View {
     let breakdown: AnalyticsSummary.CategoryBreakdown
     @Environment(\.appTheme) private var theme
-    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(alignment: .leading, spacing: theme.layoutSpacingXSmall) {
@@ -74,51 +68,42 @@ private struct CategoryBarView: View {
                 Spacer()
                 Text(breakdown.total, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                     .font(.footnote.monospacedDigit())
-                    .foregroundStyle(breakdown.total >= 0 ? palette.positive : palette.negative)
+                    .foregroundStyle(breakdown.total >= 0 ? theme.palette.positive : theme.palette.negative)
             }
             GeometryReader { geometry in
                 RoundedRectangle(cornerRadius: theme.cornerRadius / 2)
-                    .fill(palette.chartGradient)
+                    .fill(theme.palette.chartGradient)
                     .frame(width: max(geometry.size.width * CGFloat(min(abs(breakdown.total) / 2000, 1)), 8), height: 6)
             }
             .frame(height: 6)
         }
-    }
-
-    private var palette: AppTheme.Palette {
-        theme.palette(for: colorScheme)
     }
 }
 
 private struct AIInsightBubble: View {
     let insight: AIService.Insight?
     @Environment(\.appTheme) private var theme
-    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(alignment: .leading, spacing: theme.layoutSpacingSmall) {
             HStack {
                 Label("AI Insight", systemImage: "sparkles")
                     .font(.headline)
-                    .foregroundStyle(palette.accent)
+                    .foregroundStyle(theme.palette.accent)
                 Spacer()
                 if let insight {
                     Text("Confidence: \(Int(insight.confidence * 100))%")
                         .font(.caption)
-                        .foregroundStyle(palette.subheadline)
+                        .foregroundStyle(theme.palette.subheadline)
                 }
             }
             Text(insight?.message ?? "Insights will appear here once data is available.")
                 .font(.callout)
         }
         .padding(theme.layoutPadding)
-        .background(palette.cardBackground)
+        .background(theme.palette.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadius, style: .continuous))
-        .shadow(color: palette.shadow.opacity(0.25), radius: 12, x: 0, y: 6)
-    }
-
-    private var palette: AppTheme.Palette {
-        theme.palette(for: colorScheme)
+        .shadow(color: theme.palette.shadow.opacity(0.25), radius: 12, x: 0, y: 6)
     }
 }
 
@@ -136,5 +121,5 @@ private extension LedgerItem.Category {
     }
     return AnalyticsOverviewView()
         .environmentObject(vm)
-        .environment(\.appTheme, .cyberFlux)
+        .environment(\.appTheme, .cyberDark)
 }

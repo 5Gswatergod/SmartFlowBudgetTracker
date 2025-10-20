@@ -3,19 +3,18 @@ import SwiftUI
 struct SyncStatusView: View {
     @EnvironmentObject private var viewModel: SyncViewModel
     @Environment(\.appTheme) private var theme
-    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(alignment: .leading, spacing: theme.layoutSpacingSmall) {
             HStack {
                 Label("Cloud sync", systemImage: iconName)
                     .font(.headline)
-                    .foregroundStyle(palette.accent)
+                    .foregroundStyle(theme.palette.accent)
                 Spacer()
                 if let lastSync = viewModel.status.lastSync {
                     Text(lastSync, style: .time)
                         .font(.caption)
-                        .foregroundStyle(palette.subheadline)
+                        .foregroundStyle(theme.palette.subheadline)
                 }
             }
             Text(viewModel.status.message ?? "Tap sync to stay current.")
@@ -26,7 +25,7 @@ struct SyncStatusView: View {
             .buttonStyle(.bordered)
         }
         .padding(theme.layoutPadding)
-        .background(palette.panelBackground)
+        .background(theme.palette.panelBackground)
         .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadius, style: .continuous))
     }
 
@@ -38,10 +37,6 @@ struct SyncStatusView: View {
         case .failure: return "exclamationmark.icloud"
         }
     }
-
-    private var palette: AppTheme.Palette {
-        theme.palette(for: colorScheme)
-    }
 }
 
 #Preview {
@@ -49,5 +44,5 @@ struct SyncStatusView: View {
     let vm = SyncViewModel(service: service)
     return SyncStatusView()
         .environmentObject(vm)
-        .environment(\.appTheme, .cyberFlux)
+        .environment(\.appTheme, .cyberDark)
 }

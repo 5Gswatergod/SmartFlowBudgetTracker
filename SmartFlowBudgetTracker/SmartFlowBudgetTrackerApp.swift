@@ -30,7 +30,7 @@ struct SmartFlowBudgetTrackerApp: App {
         _paymentViewModel = StateObject(wrappedValue: PaymentViewModel(manager: paymentManager))
         _syncViewModel = StateObject(wrappedValue: SyncViewModel(service: cloudSyncService))
 
-        theme = .cyberFlux
+        theme = .cyberDark
     }
 
     var body: some Scene {

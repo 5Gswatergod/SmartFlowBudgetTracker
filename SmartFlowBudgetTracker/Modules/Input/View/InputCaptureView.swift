@@ -3,7 +3,6 @@ import SwiftUI
 struct InputCaptureView: View {
     @EnvironmentObject private var viewModel: InputViewModel
     @Environment(\.appTheme) private var theme
-    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(alignment: .leading, spacing: theme.layoutSpacingMedium) {
@@ -21,12 +20,12 @@ struct InputCaptureView: View {
             if let message = viewModel.statusMessage {
                 Text(message)
                     .font(.footnote)
-                    .foregroundStyle(palette.subheadline)
+                    .foregroundStyle(theme.palette.subheadline)
                     .transition(.opacity)
             }
         }
         .padding(theme.layoutPadding)
-        .background(palette.panelBackground)
+        .background(theme.palette.panelBackground)
         .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadius, style: .continuous))
     }
 
@@ -39,7 +38,7 @@ struct InputCaptureView: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
-            .tint(palette.accent)
+            .tint(theme.palette.accent)
             .disabled(viewModel.isProcessing)
 
             HStack {
@@ -57,14 +56,10 @@ struct InputCaptureView: View {
             }
         }
     }
-
-    private var palette: AppTheme.Palette {
-        theme.palette(for: colorScheme)
-    }
 }
 
 #Preview {
     InputCaptureView()
         .environmentObject(InputViewModel(service: InputService(coreDataStack: CoreDataStack(modelName: "Preview"), ledgerService: LedgerService(coreDataStack: CoreDataStack(modelName: "Preview")))))
-        .environment(\.appTheme, .cyberFlux)
+        .environment(\.appTheme, .cyberDark)
 }

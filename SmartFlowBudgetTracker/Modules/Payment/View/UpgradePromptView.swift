@@ -3,7 +3,6 @@ import SwiftUI
 struct UpgradePromptView: View {
     @EnvironmentObject private var paymentViewModel: PaymentViewModel
     @Environment(\.appTheme) private var theme
-    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(alignment: .leading, spacing: theme.layoutSpacingSmall) {
@@ -13,7 +12,7 @@ struct UpgradePromptView: View {
                 Spacer()
                 if paymentViewModel.isPremiumUnlocked {
                     Label("Pro", systemImage: "checkmark.seal.fill")
-                        .foregroundStyle(palette.accent)
+                        .foregroundStyle(theme.palette.accent)
                 }
             }
             planRows
@@ -24,7 +23,7 @@ struct UpgradePromptView: View {
                     }
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(palette.accent)
+                .tint(theme.palette.accent)
                 Button("Restore") {
                     paymentViewModel.restorePurchases()
                 }
@@ -32,11 +31,11 @@ struct UpgradePromptView: View {
             if let error = paymentViewModel.purchaseError {
                 Text(error)
                     .font(.caption)
-                    .foregroundStyle(palette.negative)
+                    .foregroundStyle(theme.palette.negative)
             }
         }
         .padding(theme.layoutPadding)
-        .background(palette.panelBackground)
+        .background(theme.palette.panelBackground)
         .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadius, style: .continuous))
         .onAppear { paymentViewModel.load() }
     }
@@ -50,26 +49,22 @@ struct UpgradePromptView: View {
                             .font(.headline)
                         Text(plan.description)
                             .font(.caption)
-                            .foregroundStyle(palette.subheadline)
+                            .foregroundStyle(theme.palette.subheadline)
                     }
                     Spacer()
                     Text(plan.price, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                         .font(.headline.monospacedDigit())
                 }
                 .padding(theme.layoutSpacingSmall)
-                .background(palette.cardBackground)
+                .background(theme.palette.cardBackground)
                 .clipShape(RoundedRectangle(cornerRadius: theme.cornerRadius, style: .continuous))
             }
         }
-    }
-
-    private var palette: AppTheme.Palette {
-        theme.palette(for: colorScheme)
     }
 }
 
 #Preview {
     UpgradePromptView()
         .environmentObject(PaymentViewModel(manager: IAPManager()))
-        .environment(\.appTheme, .cyberFlux)
+        .environment(\.appTheme, .cyberDark)
 }

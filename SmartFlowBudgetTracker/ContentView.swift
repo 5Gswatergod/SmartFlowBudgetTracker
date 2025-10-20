@@ -9,13 +9,12 @@ struct ContentView: View {
     @EnvironmentObject private var syncViewModel: SyncViewModel
     @EnvironmentObject private var aiService: AIService
     @Environment(\.appTheme) private var theme
-    @Environment(\.colorScheme) private var colorScheme
 
     @State private var selectedTab: Tab = .ledger
 
     var body: some View {
         ZStack {
-            palette.windowBackground
+            theme.palette.windowBackground
                 .ignoresSafeArea()
 
             TabView(selection: $selectedTab) {
@@ -132,7 +131,7 @@ struct ContentView: View {
                         .font(.largeTitle.bold())
                     Text("Your automated budget co-pilot")
                         .font(.subheadline)
-                        .foregroundStyle(palette.subheadline)
+                        .foregroundStyle(theme.palette.subheadline)
                 }
                 Spacer()
                 Menu {
@@ -153,18 +152,14 @@ struct ContentView: View {
                     Label("AI mode: \(aiService.mode.rawValue.capitalized)", systemImage: "slider.horizontal.3")
                         .padding(.horizontal, theme.layoutSpacingSmall)
                         .padding(.vertical, theme.layoutSpacingXSmall)
-                        .background(palette.cardBackground)
+                        .background(theme.palette.cardBackground)
                         .clipShape(Capsule())
                 }
             }
             Text("Latest sync: \(syncViewModel.status.lastSync?.formatted(date: .numeric, time: .shortened) ?? "--")")
                 .font(.caption)
-                .foregroundStyle(palette.subheadline)
+                .foregroundStyle(theme.palette.subheadline)
         }
-    }
-
-    private var palette: AppTheme.Palette {
-        theme.palette(for: colorScheme)
     }
 }
 
@@ -190,5 +185,5 @@ struct ContentView: View {
             .environmentObject(syncVM)
             .environmentObject(aiService)
     }
-    .environment(\.appTheme, .cyberFlux)
+    .environment(\.appTheme, .cyberDark)
 }
