@@ -10,26 +10,39 @@ struct ContentView: View {
     @EnvironmentObject private var aiService: AIService
     @Environment(\.appTheme) private var theme
 
+    @State private var selectedTab: Tab = .ledger
+
     var body: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: theme.layoutSpacingLarge) {
-                header
-                LedgerDashboardView()
-                    .environmentObject(ledgerViewModel)
-                AnalyticsOverviewView()
-                    .environmentObject(analyticsViewModel)
-                InputCaptureView()
-                    .environmentObject(inputViewModel)
-                RetentionPromptView()
-                    .environmentObject(retentionViewModel)
-                SyncStatusView()
-                    .environmentObject(syncViewModel)
-                UpgradePromptView()
-                    .environmentObject(paymentViewModel)
+        ZStack {
+            theme.palette.windowBackground
+                .ignoresSafeArea()
+
+            TabView(selection: $selectedTab) {
+                ledgerTab
+                    .tabItem { Label("Ledger", systemImage: "list.bullet.rectangle") }
+                    .tag(Tab.ledger)
+
+                analyticsTab
+                    .tabItem { Label("Analytics", systemImage: "chart.bar.xaxis") }
+                    .tag(Tab.analytics)
+
+                inputTab
+                    .tabItem { Label("Capture", systemImage: "bolt.fill") }
+                    .tag(Tab.input)
+
+                retentionTab
+                    .tabItem { Label("Retention", systemImage: "person.2.wave.2") }
+                    .tag(Tab.retention)
+
+                syncTab
+                    .tabItem { Label("Sync", systemImage: "arrow.clockwise") }
+                    .tag(Tab.sync)
+
+                upgradeTab
+                    .tabItem { Label("Upgrade", systemImage: "sparkles") }
+                    .tag(Tab.upgrade)
             }
-            .padding(theme.layoutPadding)
         }
-        .background(theme.palette.windowBackground.ignoresSafeArea())
         .onAppear {
             ledgerViewModel.refresh()
             retentionViewModel.refresh()
@@ -42,6 +55,71 @@ struct ContentView: View {
         }
         .onChange(of: inputViewModel.lastImportedItem) { _ in
             ledgerViewModel.refresh()
+        }
+    }
+
+    private enum Tab: Hashable {
+        case ledger, analytics, input, retention, sync, upgrade
+    }
+
+    private var ledgerTab: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: theme.layoutSpacingLarge) {
+                header
+                LedgerDashboardView()
+                    .environmentObject(ledgerViewModel)
+            }
+            .padding(theme.layoutPadding)
+        }
+    }
+
+    private var analyticsTab: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: theme.layoutSpacingLarge) {
+                AnalyticsOverviewView()
+                    .environmentObject(analyticsViewModel)
+            }
+            .padding(theme.layoutPadding)
+        }
+    }
+
+    private var inputTab: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: theme.layoutSpacingLarge) {
+                InputCaptureView()
+                    .environmentObject(inputViewModel)
+            }
+            .padding(theme.layoutPadding)
+        }
+    }
+
+    private var retentionTab: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: theme.layoutSpacingLarge) {
+                RetentionPromptView()
+                    .environmentObject(retentionViewModel)
+            }
+            .padding(theme.layoutPadding)
+        }
+    }
+
+    private var syncTab: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: theme.layoutSpacingLarge) {
+                SyncStatusView()
+                    .environmentObject(syncViewModel)
+            }
+            .padding(theme.layoutPadding)
+        }
+    }
+
+    private var upgradeTab: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: theme.layoutSpacingLarge) {
+                UpgradePromptView()
+                    .environmentObject(paymentViewModel)
+            }
+            .padding(theme.layoutPadding)
         }
     }
 
