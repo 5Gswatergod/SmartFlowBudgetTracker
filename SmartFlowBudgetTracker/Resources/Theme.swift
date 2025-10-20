@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct AppTheme: Equatable {
-    struct Palette: Equatable {
+struct AppTheme {
+    struct Palette {
         let windowBackground: Color
         let panelBackground: Color
         let cardBackground: Color
